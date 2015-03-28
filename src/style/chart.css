@@ -2,6 +2,8 @@ svg {
     font-size: small;
     padding-left: 41px;
     padding-right: 41px;
+    stroke-width: 1;
+    stroke: #f1f1f1;
 }
 svg g.axis {
     fill: none;
