@@ -24,32 +24,32 @@ svg path.domain {
     stroke: #f1f1f1;
     stroke-width: 1;
 }
-.movingCircle {
+circle.movingCircle {
     fill: #4b86ee;
 }
-.movingLine {
+line.movingLine {
     fill: none;
     stroke: #bbb;
     stroke-dasharray: 1;
     stroke-width: 1;
 }
-.movingTriangle {
+path.movingTriangle {
     fill: #f1f1f1;
     stroke: #e5e5e5;
 }
-.movingTextContainer {
+rect.movingTextContainer {
     fill: #f1f1f1;
     stroke: #e5e5e5;
     stroke-width: 1px;
 }
-.axesValues {
+text.axesValues {
     font-size: 13px;
     letter-spacing: normal;
 }
-.axesValues.xAxis {
+text.axesValues.xAxis {
     font-weight: bold;
 }
-.axesValues.yAxis {
+text.axesValues.yAxis {
     fill: #757575;
 }
 
