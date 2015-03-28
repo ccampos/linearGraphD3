@@ -10,7 +10,13 @@ function LineGraph (c) {
         .attr('height', c.height)
         .attr('width', c.width)
 
-    isConsistent(c.data);
+    if (isConsistent(c.data)) {
+        getRelevant(c.data);
+    }
+
+    function getRelevant(data) {
+        return true;
+    }
 
     function isConsistent (data) {
         var length = data.length,

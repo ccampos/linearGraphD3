@@ -14,6 +14,11 @@
                 age: 26,
                 nextBirthday: '2015-06-14',
                 marketCap: 'na'
+            },
+            {
+                age: 26,
+                nextBirthday: '2015-06-14',
+                marketCap: 'na'
             }
         ]
     }
