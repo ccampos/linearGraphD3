@@ -1,0 +1,68 @@
+svg {
+    font-size: small;
+    padding-left: 41px;
+    padding-right: 41px;
+}
+svg g.axis {
+    fill: none;
+    stroke: #ababab;
+    stroke-width: 1;
+}
+svg text {
+    cursor: default;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+svg path.path {
+    fill: none;
+    stroke: #4b86ee;
+    stroke-width: 3;
+}
+svg path.domain {
+    fill: none;
+    stroke: #f1f1f1;
+    stroke-width: 1;
+}
+.movingCircle {
+    fill: #4b86ee;
+}
+.movingLine {
+    fill: none;
+    stroke: #bbb;
+    stroke-dasharray: 1;
+    stroke-width: 1;
+}
+.movingTriangle {
+    fill: #f1f1f1;
+    stroke: #e5e5e5;
+}
+.movingTextContainer {
+    fill: #f1f1f1;
+    stroke: #e5e5e5;
+    stroke-width: 1px;
+}
+.axesValues {
+    font-size: 13px;
+    letter-spacing: normal;
+}
+.axesValues.xAxis {
+    font-weight: bold;
+}
+.axesValues.yAxis {
+    fill: #757575;
+}
+
+/* so that svg component pointer events
+ * do not interfere with svg pointer events */
+svg g,
+svg.text,
+svg path.path,
+svg path.domain,
+.movingCircle,
+.movingLine,
+.movingTriangle,
+.movingTextContainer,
+.axesValues {
+    pointer-events: none;
+}
