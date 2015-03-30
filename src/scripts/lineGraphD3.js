@@ -1,27 +1,30 @@
 function LineGraph (c) {
+    var svg,
+        firstPropertyName = c.firstPropertyName,
+        secondPropertyName = c.secondPropertyName;
+
     this.axesGenerator;
     this.displayAxes;
     this.pathGenerator;
     this.displayPath;
 
-    this.svg = d3
-        .select('body')
-        .append('svg')
-        .attr('height', c.height)
-        .attr('width', c.width)
+    createSvg();
 
     if (isConsistent(c.data)) {
         getRelevant(c.data);
     }
 
     function getRelevant(data) {
-        return true;
+        var relevantData,
+            length = data.length;
+
+        for (var i = firstIndex; i < length; i = i + 1) {
+            data
+        }
     }
 
     function isConsistent (data) {
         var length = data.length,
-            firstPropertyName = c.firstPropertyName,
-            secondPropertyName = c.secondPropertyName,
             firstPropertyType,
             secondPropertyType,
             _availableProperties = availableProperties(c.data);
@@ -91,5 +94,13 @@ function LineGraph (c) {
             }
             return false;
         }
+    }
+
+    function createSvg () {
+        svg = d3
+        .select('body')
+        .append('svg')
+        .attr('height', c.height)
+        .attr('width', c.width);
     }
 }
