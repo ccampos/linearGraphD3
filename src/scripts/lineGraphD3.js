@@ -60,16 +60,12 @@ function LineGraph (c) {
                         if (firstPropertyType != typeof data[i][property]) {
                             console.error('mismatch data type for first property at index ' + i);
                             return undefined;
-                        } else {
-                            console.log('first property consistent data');
                         }
                     }
                     if (property === secondPropertyName) {
                         if (secondPropertyType != typeof data[i][property]) {
                             console.error('mismatch data type for second property at index ' + i);
                             return undefined;
-                        } else {
-                            console.log('second property consistent data');
                         }
                     }
                 }
