@@ -19,7 +19,6 @@ function LineGraph (c) {
             length = data.length;
 
         for (var i = firstIndex; i < length; i = i + 1) {
-            data
         }
     }
 
