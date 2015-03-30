@@ -4,7 +4,8 @@
         width: 575,
         data: getSampleData('stocks'),
         firstPropertyName: 'Date',
-        secondPropertyName: 'Close'
+        secondPropertyName: 'Close',
+        sortBy: 'Date'
     }
 
     var lineGraph = new LineGraph(configuration);
