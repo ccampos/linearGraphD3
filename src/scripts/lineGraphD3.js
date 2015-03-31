@@ -3,7 +3,8 @@ function LineGraph (c) {
         firstPropertyName = c.firstPropertyName,
         secondPropertyName = c.secondPropertyName,
         data,
-        firstIndex = 0;
+        firstIndex = 0,
+        console = window.console || {};
 
     this.axesGenerator;
     this.displayAxes;
