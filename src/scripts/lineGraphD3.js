@@ -17,13 +17,55 @@ function LineGraph (c) {
         data = getRelevant(c.data);
         data = transformData(data);
         data = sortData(data, c.sortBy);
+        axesGenerator(data);
     } else {
         console.log('data is not consistent');
         return undefined;
     }
 
-    function axesGenerator () {
-        function scalesGenerator () {
+    function axesGenerator (_data) {
+        var length = _data.length,
+            lastIndex = length - 1,
+            items = [];
+
+        for (property in _data[firstIndex]) {
+            if (property.indexOf('MomentObject') != -1) {
+                items[0] = _data[firstIndex][property];
+            }
+            if (typeof _data[firstIndex][property] === 'number') {
+                items[1] = _data[firstIndex][property];
+            }
+        }
+
+        scalesGenerator(items);
+
+        function scalesGenerator (_items) {
+            var length = _items.length;
+                firstItem,
+                lastItem,
+                _xScale,
+                _yScale;
+
+            for (var i = firstIndex; i < _items.length; i = i + 1) {
+                if (isDate(_items[i])) {
+                    firstItem = _items[i];
+                    lastItem = _data[lastIndex][_items[i]];
+                    _xScale = d3.time.scale()
+                        .domain([firstItem, lastItem])
+                        .rangeRound([c.height]);
+                } else if (isNumber(_items[i])) {
+                    _yScale = d3.scale.linear()
+                        .range([c.height])
+                        .domain([
+                            d3.min(_data, function (d) { return d[_item] }),
+                            d3.max(_data, function (d) { return d[_item] })
+                        ])
+                }
+                return {
+                    xScale: _xScale,
+                    yScale: _yScale
+                }
+            }
         }
     }
 
@@ -70,6 +112,14 @@ function LineGraph (c) {
 
         if (newDate._d != 'Invalid Date') {
             return newDate;
+        }
+    }
+
+    function isNumber (argument) {
+        if (typeof argument === 'number') {
+            return true;
+        } else {
+            return false;
         }
     }
 
