@@ -11,16 +11,20 @@ function LineGraph (c) {
     this.pathGenerator;
     this.displayPath;
 
-    svg = createSvg();
+    initialize();
 
-    if (isConsistent(c.data)) {
-        data = getRelevant(c.data);
-        data = transformData(data);
-        data = sortData(data, c.sortBy);
-        axesGenerator(data);
-    } else {
-        console.log('data is not consistent');
-        return undefined;
+    function initialize () {
+        svg = createSvg();
+
+        if (isConsistent(c.data)) {
+            data = getRelevant(c.data);
+            data = transformData(data);
+            data = sortData(data, c.sortBy);
+            axesGenerator(data);
+        } else {
+            console.log('data is not consistent');
+            return undefined;
+        }
     }
 
     function axesGenerator (_data) {
@@ -40,7 +44,7 @@ function LineGraph (c) {
         scalesGenerator(items);
 
         function scalesGenerator (_items) {
-            var length = _items.length;
+            var length = _items.length,
                 firstItem,
                 lastItem,
                 _xScale,
@@ -112,6 +116,8 @@ function LineGraph (c) {
 
         if (newDate._d != 'Invalid Date') {
             return newDate;
+        } else {
+            return undefined;
         }
     }
 
