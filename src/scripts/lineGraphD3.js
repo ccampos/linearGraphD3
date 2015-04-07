@@ -41,34 +41,47 @@ function LineGraph (c) {
             }
         }
 
-        scalesGenerator(items);
-
         function scalesGenerator (_items) {
             var length = _items.length,
                 firstItem,
                 lastItem,
                 _xScale,
-                _yScale;
+                _yScale,
+                _yScalePropertyName;
 
             for (var i = firstIndex; i < _items.length; i = i + 1) {
                 if (isDate(_items[i])) {
                     firstItem = _items[i];
-                    lastItem = _data[lastIndex][_items[i]];
+                    for (property in _data[lastIndex]) {
+                        if (property.indexOf('MomentObject') != -1) {
+                            lastItem = _data[lastIndex][property];
+                        }
+                    }
                     _xScale = d3.time.scale()
                         .domain([firstItem, lastItem])
                         .rangeRound([c.height]);
                 } else if (isNumber(_items[i])) {
+                    if (i === 0) {
+                        _yScalePropertyName = firstPropertyName;
+                    } else if (i === 1) {
+                        _yScalePropertyName = secondPropertyName;
+                    } else {
+                        return undefined;
+                    }
                     _yScale = d3.scale.linear()
                         .range([c.height])
                         .domain([
-                            d3.min(_data, function (d) { return d[_item] }),
-                            d3.max(_data, function (d) { return d[_item] })
-                        ])
+                            d3.min(_data, function (d) { return d[_yScalePropertyName] }),
+                            d3.max(_data, function (d) { return d[_yScalePropertyName] })
+                        ]);
+                } else {
+                    return undefined;
                 }
-                return {
-                    xScale: _xScale,
-                    yScale: _yScale
-                }
+            }
+
+            return {
+                xScale: _xScale,
+                yScale: _yScale
             }
         }
     }
@@ -112,13 +125,18 @@ function LineGraph (c) {
     }
 
     function isDate (string) {
-        var newDate = moment(string);
+        var newDate,
+            numberStringRegEx = /\d{1,4}-\d{1,2}-\d{1,4}/;
 
-        if (newDate._d != 'Invalid Date') {
+        if (typeof string === 'object') {
+            if (string._isAMomentObject) {
+                return string;
+            }
+        } else if (typeof string === 'string' && string.match(numberStringRegEx)) {
+            newDate = moment(string);
             return newDate;
-        } else {
-            return undefined;
         }
+        return undefined;
     }
 
     function isNumber (argument) {
