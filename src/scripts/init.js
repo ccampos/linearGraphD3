@@ -8,7 +8,7 @@
         sortBy: 'Date'
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var lineGraph = new LineGraph(configuration);
     });
 })();

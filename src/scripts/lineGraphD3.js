@@ -4,9 +4,9 @@ function LineGraph (c) {
         secondPropertyName = c.secondPropertyName,
         data,
         firstIndex = 0,
-        console = window.console || {};
+        console = window.console || {},
+        axisGeneratorsObject;
 
-    this.axesGenerator;
     this.displayAxes;
     this.pathGenerator;
     this.displayPath;
@@ -20,17 +20,31 @@ function LineGraph (c) {
             data = getRelevant(c.data);
             data = transformData(data);
             data = sortData(data, c.sortBy);
-            axesGenerator(data);
+            axisGeneratorsObject = axisGenerators(data);
+            displayAxes();
         } else {
             console.log('data is not consistent');
             return undefined;
         }
     }
 
-    function axesGenerator (_data) {
+    function displayAxes () {
+            appendAxis('x axis', axisGeneratorsObject.xAxisGenerator, 0, c.height);
+            appendAxis('y axis', axisGeneratorsObject.yAxisGenerator, 0, 0);
+
+        function appendAxis (_class, _axisGenerator, firstTranslateParameter, secondTranslateParameter) {
+            svg.append('svg:g')
+                .attr('class', _class)
+                .attr('transform', 'translate(0,0)')
+                .call(_axisGenerator)
+        }
+    }
+
+    function axisGenerators (_data) {
         var length = _data.length,
             lastIndex = length - 1,
-            items = [];
+            items = [],
+            scaleGenerators;
 
         for (property in _data[firstIndex]) {
             if (property.indexOf('MomentObject') != -1) {
@@ -41,7 +55,20 @@ function LineGraph (c) {
             }
         }
 
-        function scalesGenerator (_items) {
+        scaleGenerators = scaleGenerators(items);
+
+        return {
+            xAxisGenerator: getAxisGenerator(scaleGenerators.xScale),
+            yAxisGenerator: getAxisGenerator(scaleGenerators.yScale)
+        }
+
+        function getAxisGenerator (_scale) {
+            return d3.svg.axis()
+                .scale(_scale)
+                .ticks(4)
+        }
+
+        function scaleGenerators (_items) {
             var length = _items.length,
                 firstItem,
                 lastItem,
@@ -61,13 +88,6 @@ function LineGraph (c) {
                         .domain([firstItem, lastItem])
                         .rangeRound([c.height]);
                 } else if (isNumber(_items[i])) {
-                    if (i === 0) {
-                        _yScalePropertyName = firstPropertyName;
-                    } else if (i === 1) {
-                        _yScalePropertyName = secondPropertyName;
-                    } else {
-                        return undefined;
-                    }
                     _yScale = d3.scale.linear()
                         .range([c.height])
                         .domain([
