@@ -5,7 +5,10 @@ function LineGraph (c) {
         data,
         firstIndex = 0,
         console = window.console || {},
-        axisGeneratorsObject;
+        axisGeneratorsObject,
+        scaleGeneratorsObject,
+        lineGenerator,
+        pathClass = 'path';
 
     this.displayAxes;
     this.pathGenerator;
@@ -14,18 +17,41 @@ function LineGraph (c) {
     initialize();
 
     function initialize () {
-        svg = createSvg();
+        svg = createSvg(),
+            lineGenerator;
 
         if (isConsistent(c.data)) {
             data = getRelevant(c.data);
             data = transformData(data);
             data = sortData(data, c.sortBy);
             axisGeneratorsObject = axisGenerators(data);
+            scaleGeneratorsObject = axisGeneratorsObject.scaleGenerators;
             displayAxes();
+            lineGenerator = lineGenerator(scaleGeneratorsObject);
+            displayLine(data);
         } else {
             console.log('data is not consistent');
             return undefined;
         }
+    }
+
+    function displayLine (_data) {
+        svg.append('svg:path')
+            .attr({
+                d: lineGenerator(_data),
+                'class': pathClass
+            });
+    }
+
+    function lineGenerator (scaleGenerators) {
+        return d3.svg.line()
+            .x( function (d) {
+                return scaleGenerators.xScale(d[firstPropertyName + 'MomentObject']);
+            })
+            .y( function (d) {
+                return scaleGenerators.yScale(d[secondPropertyName]);
+            })
+            .interpolate('linear');
     }
 
     function displayAxes () {
@@ -72,7 +98,8 @@ function LineGraph (c) {
 
         return {
             xAxisGenerator: xAxis,
-            yAxisGenerator: yAxis
+            yAxisGenerator: yAxis,
+            scaleGenerators: scaleGenerators
         }
 
         function getAxisGenerator (_scale) {
@@ -87,8 +114,7 @@ function LineGraph (c) {
                 firstItem,
                 lastItem,
                 _xScale,
-                _yScale,
-                _yScalePropertyName;
+                _yScale;
 
             for (var i = firstIndex; i < _items.length; i = i + 1) {
                 if (isDate(_items[i])) {
