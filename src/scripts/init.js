@@ -2,9 +2,9 @@
     configuration = {
         height: 200,
         width: 575,
-        data: getSampleData('teamSoccerGames'),
+        data: getSampleData('stocks'),
         firstPropertyName: 'Date',
-        secondPropertyName: 'Fouls',
+        secondPropertyName: 'Close',
         sortBy: 'Date'
     }
 
