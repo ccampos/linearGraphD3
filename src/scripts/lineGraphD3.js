@@ -30,13 +30,16 @@ function LineGraph (c) {
 
     function displayAxes () {
             appendAxis('x axis', axisGeneratorsObject.xAxisGenerator, 0, c.height);
-            appendAxis('y axis', axisGeneratorsObject.yAxisGenerator, 0, 0);
+            appendAxis('y axis', axisGeneratorsObject.yAxisGenerator);
 
         function appendAxis (_class, _axisGenerator, firstTranslateParameter, secondTranslateParameter) {
-            svg.append('svg:g')
+            var axis = svg.append('svg:g')
                 .attr('class', _class)
-                .attr('transform', 'translate(0,0)')
-                .call(_axisGenerator)
+                .call(_axisGenerator);
+            if (typeof firstTranslateParameter === 'number' && typeof secondTranslateParameter === 'number') {
+                axis
+                    .attr('transform', 'translate(' + firstTranslateParameter + ',' + secondTranslateParameter + ')')
+            }
         }
     }
 
@@ -44,7 +47,9 @@ function LineGraph (c) {
         var length = _data.length,
             lastIndex = length - 1,
             items = [],
-            scaleGenerators;
+            scaleGenerators,
+            xAxis,
+            yAxis;
 
         for (property in _data[firstIndex]) {
             if (property.indexOf('MomentObject') != -1) {
@@ -57,15 +62,24 @@ function LineGraph (c) {
 
         scaleGenerators = scaleGenerators(items);
 
+        xAxis = getAxisGenerator(scaleGenerators.xScale);
+        yAxis = getAxisGenerator(scaleGenerators.yScale);
+
+        xAxis
+            .tickFormat(d3.time.format('%b %y')) 
+        yAxis
+            .orient('left') 
+
         return {
-            xAxisGenerator: getAxisGenerator(scaleGenerators.xScale),
-            yAxisGenerator: getAxisGenerator(scaleGenerators.yScale)
+            xAxisGenerator: xAxis,
+            yAxisGenerator: yAxis
         }
 
         function getAxisGenerator (_scale) {
             return d3.svg.axis()
                 .scale(_scale)
                 .ticks(4)
+                .tickPadding(4)
         }
 
         function scaleGenerators (_items) {
@@ -86,10 +100,10 @@ function LineGraph (c) {
                     }
                     _xScale = d3.time.scale()
                         .domain([firstItem, lastItem])
-                        .rangeRound([c.height]);
+                        .rangeRound([0, c.width]);
                 } else if (isNumber(_items[i])) {
                     _yScale = d3.scale.linear()
-                        .range([c.height])
+                        .range([c.height, 0])
                         .domain([
                             d3.min(_data, function (d) { return d[_yScalePropertyName] }),
                             d3.max(_data, function (d) { return d[_yScalePropertyName] })
