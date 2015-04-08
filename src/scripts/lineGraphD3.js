@@ -105,8 +105,8 @@ function LineGraph (c) {
                     _yScale = d3.scale.linear()
                         .range([c.height, 0])
                         .domain([
-                            d3.min(_data, function (d) { return d[_yScalePropertyName] }),
-                            d3.max(_data, function (d) { return d[_yScalePropertyName] })
+                            d3.min(_data, function (d) { return d[secondPropertyName] }),
+                            d3.max(_data, function (d) { return d[secondPropertyName] })
                         ]);
                 } else {
                     return undefined;

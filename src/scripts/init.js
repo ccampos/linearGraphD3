@@ -1,6 +1,6 @@
 (function () {
     configuration = {
-        height: 175,
+        height: 200,
         width: 575,
         data: getSampleData('stocks'),
         firstPropertyName: 'Date',
