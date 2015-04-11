@@ -12,9 +12,14 @@ function LineGraph (c) {
         axisGenerators,
         tickFormat = '%b %y',
         lineGenerator,
-        interpolateType = 'linear';
-    
+        interpolateType = 'linear',
+        yAxisOrientation = 'left',
+        pathClass = 'path';
+
+    initialize();
+
     function initialize () {
+        getGenerators();
         svg = displaySvg();
         displayAxes(svg);
     }
@@ -22,6 +27,8 @@ function LineGraph (c) {
     function getGenerators () {
         scaleGenerators = getScaleGenerators();
         axisGenerators = getAxisGenerators();
+        axisGenerators.y
+            .orient(yAxisOrientation);
         lineGenerator = getLineGenerator();
     }
 
@@ -39,7 +46,7 @@ function LineGraph (c) {
 
             if (xType === 'number' && yType === 'number') {
                 axis
-                    .attr('transform', 'translate(' + xTranslate + ',' + yTranslate + ')')
+                    .attr('transform', 'translate(' + _xTranslate + ',' + _yTranslate + ')')
             }
         }
     }
@@ -49,7 +56,7 @@ function LineGraph (c) {
             .select('body')
             .append('svg')
             .attr('height', c.height)
-            .attr('width', c.width)
+            .attr('width', c.width);
     }
 
     function getLineGenerator () {
@@ -88,14 +95,23 @@ function LineGraph (c) {
 
     function getScaleGenerators () {
         return {
-            x: getScaleGenerator(firstXAxisValue, lastXAxisValue, c.xAxisPropertyName),
-            y: getScaleGenerator(firstYAxisValue, lastYAxisValue, c.yAxisPropertyName)
+            x: getScaleGenerator(firstXAxisValue, lastXAxisValue, c.xAxisPropertyName, 'x'),
+            y: getScaleGenerator(firstYAxisValue, lastYAxisValue, c.yAxisPropertyName, 'y')
         }
 
-        function getScaleGenerator (_valueFirst, _valueLast, _propertyName) {
+        function getScaleGenerator (_valueFirst, _valueLast, _propertyName, axisName) {
+            var dimension;
+            if (axisName === 'x') {
+                dimension = c.width;
+            } else if (axisName === 'y') {
+                dimension = c.height;
+            } else {
+                return undefined;
+            }
+
             if (typeof _valueFirst === 'number') {
                 return d3.scale.linear()
-                    .range([c.width, 0])
+                    .range([dimension, 0])
                     .domain([
                         d3.min(data, function (d) { return d[_propertyName] }),
                         d3.max(data, function (d) { return d[_propertyName] })
@@ -103,7 +119,7 @@ function LineGraph (c) {
             } else if (new Date(_valueFirst) !== 'Invalid Date') {
                 return d3.time.scale()
                     .domain([_valueFirst, _valueLast])
-                    .rangeRound([0, c.width]);
+                    .rangeRound([0, dimension]);
             } else {
                 return undefined;
             }
