@@ -118,7 +118,7 @@ function LineGraph (c) {
                     ]);
             } else if (new Date(_valueFirst) !== 'Invalid Date') {
                 return d3.time.scale()
-                    .domain([_valueFirst, _valueLast])
+                    .domain([new Date(_valueFirst), new Date(_valueLast)])
                     .rangeRound([0, dimension]);
             } else {
                 return undefined;
