@@ -21,7 +21,8 @@ function LineGraph (c) {
     function initialize () {
         getGenerators();
         svg = displaySvg();
-        displayAxes(svg);
+        displayAxes();
+        displayLine();
     }
 
     function getGenerators () {
@@ -32,12 +33,21 @@ function LineGraph (c) {
         lineGenerator = getLineGenerator();
     }
 
-    function displayAxes (_svg) {
+    function displayLine () {
+        svg
+            .append('svg:path')
+            .attr({
+                d: lineGenerator(data),
+                'class': pathClass
+            });
+    }
+
+    function displayAxes () {
         appendAxis('x axis', axisGenerators.x, 0, c.height);
         appendAxis('y axis', axisGenerators.y);
 
         function appendAxis (_class, _axisGenerator, _xTranslate, _yTranslate) {
-            var axis = _svg
+            var axis = svg
                 .append('svg:g')
                 .attr('class', _class)
                 .call(_axisGenerator),
@@ -60,14 +70,42 @@ function LineGraph (c) {
     }
 
     function getLineGenerator () {
-        return d3.svg.line()
-            .x( function (d) {
-                return scaleGenerators.x(d[c.xAxisPropertyName]);
-            })
-            .y( function (d) {
-                return scaleGenerators.y(d[c.yAxisPropertyName]);
-            })
-            .interpolate(interpolateType);
+        if (typeof scaleGenerators.x.domain()[0] === 'number' && typeof scaleGenerators.y.domain()[0] === 'number') {
+            return d3.svg.line()
+                .x( function (d) {
+                    return scaleGenerators.x(d[c.xAxisPropertyName]);
+                })
+                .y( function (d) {
+                    return scaleGenerators.y(d[c.yAxisPropertyName]);
+                })
+                .interpolate(interpolateType);
+        } else if (new Date(scaleGenerators.x.domain()[0]) !== 'Invalid Date' && new Date(scaleGenerators.y.domain()[0]) !== 'Invalid Date') {
+            return d3.svg.line()
+                .x( function (d) {
+                    return scaleGenerators.x(new Date(d[c.xAxisPropertyName]));
+                })
+                .y( function (d) {
+                    return scaleGenerators.y(new Date(d[c.yAxisPropertyName]));
+                })
+                .interpolate(interpolateType);
+        } else if (new Date(scaleGenerators.x.domain()[0]) !== 'Invalid Date') {
+            return d3.svg.line()
+                .x( function (d) {
+                    return scaleGenerators.x(new Date(d[c.xAxisPropertyName]));
+                })
+                .y( function (d) {
+                    return scaleGenerators.y(d[c.yAxisPropertyName]);
+                })
+                .interpolate(interpolateType);
+        } else if (new Date(scaleGenerators.y.domain()[0]) !== 'Invalid Date') {
+            return d3.svg.line()
+                .x( function (d) {
+                    return scaleGenerators.x(d[c.xAxisPropertyName]);
+                })
+                .y( function (d) {
+                    return scaleGenerators.y(new Date(d[c.yAxisPropertyName]));
+                })
+        }
     }
 
     function getAxisGenerators () {
